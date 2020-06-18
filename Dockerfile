@@ -5,7 +5,7 @@
     # --user $(id -u):$(id -g) \
     # kyokley/castero
 
-FROM python:3.8-slim
+FROM python:3.8-slim as base
 
 ENV HOME=/home/user
 WORKDIR /home/user
@@ -24,6 +24,17 @@ RUN groupadd -r user \
         && chown -R user:user /home/user \
         && chmod -R 777 /home/user
 
+
+FROM base as dev
+COPY . /home/user/castero
+RUN cd /home/user/castero \
+        && python setup.py install
+USER user
+
+ENTRYPOINT ["castero"]
+
+
+FROM base as prod
 USER user
 
 ENTRYPOINT ["castero"]

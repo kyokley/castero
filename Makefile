@@ -1,7 +1,10 @@
 .PHONY: build run shell
 
 build:
-	docker build -t kyokley/castero .
+	docker build --target=prod -t kyokley/castero .
+
+build-dev:
+	docker build --target=dev -t kyokley/castero .
 
 run:
 	docker run --rm -it \
