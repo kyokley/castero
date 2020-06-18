@@ -8,20 +8,22 @@
 FROM python:3.8-slim
 
 ENV HOME=/home/user
+WORKDIR /home/user
+
 RUN apt update \
         && apt upgrade -y \
         && apt install -y vlc --no-install-recommends \
         && rm -rf /var/lib/apt/lists/*
 
-RUN pip install -U pip castero
+RUN pip install -U pip castero pdbpp
 
 # Add non-privileged user
 RUN groupadd -r user \
         && useradd -r -g user -G audio user \
-        && mkdir -p /home/user \
-        && chown -R user:user /home/user
+        && mkdir -p /home/user/.config /home/user/.local/share/castero \
+        && chown -R user:user /home/user \
+        && chmod -R 777 /home/user
 
 USER user
-WORKDIR /home/user
 
 ENTRYPOINT ["castero"]
